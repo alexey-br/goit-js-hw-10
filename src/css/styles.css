@@ -12,6 +12,11 @@ body {
   line-height: 1.5;
 }
 
+p {
+  margin: 0;
+  padding: 0;
+}
+
 #search-box {
   font: inherit;
   padding: 8px;
@@ -34,7 +39,23 @@ body {
   margin-bottom: 5px;
 }
 
-.country-list .country-flag {
+.country-flag {
   width: 30px;
   margin-right: 10px;
+}
+
+.country-info .country-name {
+  display: flex;
+  align-items: center;
+
+  font-size: 2em;
+  font-weight: 600;
+}
+
+.country-info p:not(:last-child) {
+  margin-bottom: 5px;
+}
+
+.country-info .info-type {
+  font-weight: 600;
 }

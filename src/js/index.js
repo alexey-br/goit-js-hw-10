@@ -1,7 +1,11 @@
-import './css/styles.css';
+import '../css/styles.css';
 import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { fetchCountries } from './fetchCountries';
+import {
+  createCuntriesListMarkup,
+  createCuntryInfoMarkup,
+} from './createMarkup';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -21,55 +25,39 @@ function onSearchInput(e) {
 
   if (searchText === '') {
     clearCuntriesList();
+    clearCountryInfo();
     return;
   }
 
   fetchCountries(searchText)
     .then(result => {
       if (result.length > 10) {
+        clearCuntriesList();
+        clearCountryInfo();
         Notify.info(
           'Too many matches found. Please enter a more specific name'
         );
-      } else if (result.length <= 10) {
-        clearCountryInfo();
-        renderCountries(result);
       } else if (result.length === 1) {
         clearCuntriesList();
         renderCountryInfo(result);
+      } else if (result.length <= 10) {
+        clearCountryInfo();
+        renderCountriesList(result);
       }
     })
-    .catch(error => {
-      alert(error);
+    .catch(() => {
+      clearCuntriesList();
+      clearCountryInfo();
       Notify.failure('Oops, there is no country with that name');
     });
 }
 
 function renderCountryInfo(countries) {
-  refs.countryList.innerHTML = createCuntryInfoMarkup(countries);
+  refs.countryInfo.innerHTML = createCuntryInfoMarkup(countries);
 }
 
-function renderCountries(countries) {
-  refs.countryList.innerHTML = createCuntriesMarkup(countries);
-}
-
-function createCuntriesMarkup(cuntries) {
-  return cuntries.reduce((acc, country) => {
-    const {
-      name: { official: name },
-      flags: { svg: flag },
-    } = country;
-    return `${acc} <li class="country-item"><img class="country-flag" src="${flag}" alt="flag of ${name}"><span class="county-name">${name}</span></li>`;
-  }, '');
-}
-
-function createCuntryInfoMarkup(cuntry) {
-  const {
-    name: { official: name },
-    capital,
-    population,
-    flags: { svg: flag },
-    languages,
-  } = cuntries;
+function renderCountriesList(countries) {
+  refs.countryList.innerHTML = createCuntriesListMarkup(countries);
 }
 
 function clearCuntriesList() {
